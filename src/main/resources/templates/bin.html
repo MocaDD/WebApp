@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Verifying Signed Binary Artifacts</title>
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+<noscript>
+    <h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
+<div class="upload-container">
+    <div class="upload-header">
+        <h2>MocaDD's Verifying Signed Binary Artifacts</h2>
+    </div>
+    <div class="upload-content">
+        <div class="multiple-upload">
+            <h3>Upload Multiple File, please pay attention to the below instruction</h3>
+            <h3>In the choose file window: first select the Binary File, followed by the Signature (Don't forget to press CTRL for the second file)</h3>
+            <form id="multipleUploadForm" name="multipleUploadForm">
+                <input id="multipleFileUploadInput" type="file" name="files" class="file-input" multiple="multiple" />
+                <button type="submit" class="primary submit-btn">Submit</button>
+            </form>
+            <div class="upload-response">
+                <div id="multipleFileUploadError"></div>
+                <div id="multipleFileUploadSuccess"></div>
+                <div id="verifySignature"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/bin.js" ></script>
+</body>
+</html>
