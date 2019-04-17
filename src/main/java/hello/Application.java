@@ -10,8 +10,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 })
 public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+    public static void main(String[] args) throws InterruptedException {
 
+        SpringApplication.run(Application.class, args);
+
+    }
 }

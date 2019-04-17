@@ -41,7 +41,7 @@ public class FileController {
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-         fileName = fileStorageService.storeFile(file);
+        fileName = fileStorageService.storeFile(file);
 
         return new UploadFileResponse(fileName,
                 file.getContentType(), file.getSize());
@@ -112,6 +112,54 @@ public class FileController {
                 sign.update(buf, 0, len);
             }
         } catch(Exception e)    {
+            return("Not OK");
+        } finally {
+            if ( in != null ) in.close();
+        }
+
+	/* Read the signature bytes */
+        Path path = Paths.get(signFile);
+        byte[] bytes = Files.readAllBytes(path);
+
+        try {
+            boolean response = sign.verify(bytes);
+            if (response == true)   {
+            }
+
+        } catch (Exception e)   {
+            return "Not OK";
+        }
+        deleteBinFiles(dataFile,signFile);
+        return "OK";
+    }
+
+    @PostMapping("/verifyBin2")
+    public String   verifyBin2() throws Exception{
+
+        String certName = "cert/bin/signedCertLast";
+        String dataFile = "uploads/bin/" + signature;
+        String signFile = "uploads/bin/" + binName;
+
+        FileInputStream certfis = new FileInputStream(certName);
+        java.security.cert.CertificateFactory cf =
+                java.security.cert.CertificateFactory.getInstance("X.509");
+        java.security.cert.Certificate cert =  cf.generateCertificate(certfis);
+
+        PublicKey pub = cert.getPublicKey();
+
+        Signature sign = Signature.getInstance("SHA256withRSA");
+        sign.initVerify(pub);
+
+        InputStream in = null;
+
+        try {
+            in = new FileInputStream(dataFile);
+            byte[] buf = new byte[2048];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                sign.update(buf, 0, len);
+            }
+        } catch(Exception e)    {
             deleteBinFiles(dataFile,signFile);
             return("Not OK");
         } finally {
@@ -132,14 +180,14 @@ public class FileController {
             deleteBinFiles(dataFile,signFile);
             return "Not OK";
         }
+        deleteBinFiles(dataFile,signFile);
         return "OK";
     }
 
-    private void deleteBinFiles(String dataFile, String signFile)    {
-        File file = new File(dataFile);
-        file.delete();
-        file = new File(signFile);
-        file.delete();
+    private void deleteBinFiles(String dataFile, String signFile) throws InterruptedException {
+
+        Thread n1 = new DeleteFilesThread(dataFile, signFile);
+        n1.start();
     }
 
     private static String verify(JarFile jar, X509Certificate targetCert) throws Exception{
@@ -234,16 +282,8 @@ public class FileController {
                 }
             }
         }
-        return "merge";
-    }
 
-    private static void removeFiles() {
-        File folder = new File(".");
-        for (File file : folder.listFiles()) {
-            if (file.getName().endsWith(".jar")) {
-                file.delete();
-            }
-        }
+        return "merge";
     }
 
     private static X509Certificate[] getAChain(Certificate[] certs,

@@ -29,7 +29,7 @@ function uploadMultipleFiles(files) {
 
         if (files.length != 2)  {
             multipleFileUploadError.style.display = "none";
-                        var content = "<p>Please upload 2 files: First select the Binary and then the Signature</p>";
+                        var content = "<p>Please upload only the binary file and the signature</p>";
                         multipleFileUploadSuccess.innerHTML = content;
                         multipleFileUploadSuccess.style.display = "block";
                         verifySignature.style.display = "none";
@@ -48,17 +48,22 @@ function uploadMultipleFiles(files) {
                     verifySignature.innerHTML = "<p> Signature is OK </p>";
                     verifySignature.style.display = "block";
                 }   else if (xhr2.responseText == "Not OK")   {
-                    verifySignature.style.display = "none";
-                    verifySignature.innerHTML = "<p> Signature is not OK  </p>";
-                    verifySignature.style.display = "block";
-                } else if (xhr2.responseText == "Certificate is not valid") {
-                    verifySignature.style.display = "none";
-                    verifySignature.innerHTML = "<p> Certificate is not valid  </p>";
-                    verifySignature.style.display = "block";
-                }  else if (xhr2.responseText == "Certificate is expired")  {
-                     verifySignature.style.display = "none";
-                     verifySignature.innerHTML = "<p> Certificate is expired </p>";
-                     verifySignature.style.display = "block";
+                    var xhr3 = new XMLHttpRequest();
+                    xhr3.open ("POST", "/verifyBin2");
+
+                    xhr3.onload = function()    {
+                        if (xhr3.responseText == "OK")  {
+                             verifySignature.style.display = "none";
+                             verifySignature.innerHTML = "<p> Signature is OK </p>";
+                             verifySignature.style.display = "block";
+                        } else  {
+                             verifySignature.style.display = "none";
+                             verifySignature.innerHTML = "<p> Signature is not OK  </p>";
+                             verifySignature.style.display = "block";
+                        }
+
+                    }
+                    xhr3.send(formData);
                 }
             }
             xhr2.send(formData);
