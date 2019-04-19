@@ -88,9 +88,23 @@ public class FileController {
     public String   verifyBin() throws Exception{
 
         Thread.sleep(1000);
-        String certName = "cert/bin/signedCertLast";
+      //  String certName = "cert/bin/signedCertLast";
         String dataFile = "uploads/bin/" + binName;
         String signFile = "uploads/bin/" + signature;
+
+        Path path = Paths.get(signFile);
+        byte[] bytes = Files.readAllBytes(path);
+
+        byte[] slice = Arrays.copyOfRange(bytes, bytes.length - 5, bytes.length - 1);
+
+        int number = slice[3] & 0xFF |
+                (slice[2] & 0xFF) << 8 |
+                (slice[1] & 0xFF) << 16 |
+                (slice[0] & 0xFF) << 24;
+
+        File path2 = new File("cert/bin/");
+        File[] files = path2.listFiles();
+        String certName = files[number - 1].getAbsolutePath();
 
         FileInputStream certfis = new FileInputStream(certName);
         java.security.cert.CertificateFactory cf =
@@ -118,11 +132,13 @@ public class FileController {
         }
 
 	/* Read the signature bytes */
-        Path path = Paths.get(signFile);
-        byte[] bytes = Files.readAllBytes(path);
+        path = Paths.get(signFile);
+        byte[] bytes2 = Files.readAllBytes(path);
+
+        byte[] bytes3 = Arrays.copyOf(bytes2, bytes.length-4);
 
         try {
-            boolean response = sign.verify(bytes);
+            boolean response = sign.verify(bytes3);
             if (response == true)   {
             }
 
