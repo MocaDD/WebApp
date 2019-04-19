@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -97,10 +99,11 @@ public class FileController {
 
         byte[] slice = Arrays.copyOfRange(bytes, bytes.length - 5, bytes.length - 1);
 
-        int number = slice[3] & 0xFF |
-                (slice[2] & 0xFF) << 8 |
-                (slice[1] & 0xFF) << 16 |
-                (slice[0] & 0xFF) << 24;
+        final ByteBuffer bb = ByteBuffer.wrap(slice);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+        int number = bb.getInt();
+
+        System.out.println(number);
 
         File path2 = new File("cert/bin/");
         File[] files = path2.listFiles();
