@@ -17,7 +17,7 @@ function uploadMultipleFiles(files) {
     xhr.onload = function() {
         console.log(xhr.responseText);
         var response = JSON.parse(xhr.responseText);
-        if(xhr.status == 200) {
+        if(xhr.status == 200 && files.length == 2) {
             multipleFileUploadError.style.display = "none";
             var content = "<p>All Files Uploaded Successfully</p>";
             multipleFileUploadSuccess.innerHTML = content;
@@ -25,17 +25,17 @@ function uploadMultipleFiles(files) {
         } else {
             multipleFileUploadSuccess.style.display = "none";
             multipleFileUploadError.innerHTML = (response && response.message) || "Some Error Occurred";
-        }
 
-        if (files.length != 2)  {
-            multipleFileUploadError.style.display = "none";
-                        var content = "<p>Please upload only the binary file and the signature</p>";
-                        multipleFileUploadSuccess.innerHTML = content;
-                        multipleFileUploadSuccess.style.display = "block";
-                        verifySignature.style.display = "none";
         }
-
+        if (files.length > 2)    {
+            multipleFileUploadSuccess.style.display = "none";
+            multipleFileUploadError.innerHTML = "Please upload only the binary file and the signature";
+            multipleFileUploadError.style.display = "block";
+            verifySignature.style.display = "none";
+            multipleFileUploadSuccess.style.display = "none";
+        }
     }
+
     xhr.send(formData);
 
     var xhr2 = new XMLHttpRequest();
@@ -56,26 +56,31 @@ function uploadMultipleFiles(files) {
                              verifySignature.style.display = "none";
                              verifySignature.innerHTML = "<p> Signature is OK </p>";
                              verifySignature.style.display = "block";
-                        } else  {
+                        } else if (xhr3.responseText == "Not OK") {
                              verifySignature.style.display = "none";
                              verifySignature.innerHTML = "<p> Signature is not OK  </p>";
                              verifySignature.style.display = "block";
+                        } else  {
+                            verifySignature.style.display = "none";
+                            verifySignature.innerHTML = xhr3.responseText;
+                            verifySignature.style.display = "block";
                         }
 
                     }
                     xhr3.send(formData);
+                } else  {
+                    verifySignature.style.display = "none";
+                    verifySignature.innerHTML = xhr2.responseText;
+                    verifySignature.style.display = "block";
+
                 }
             }
             xhr2.send(formData);
         }
 }
 
-multipleUploadForm.addEventListener('submit', function(event){
+  multipleUploadForm.addEventListener('submit', function(event){
     var files = multipleFileUploadInput.files;
-    if(files.length === 0) {
-        multipleFileUploadError.innerHTML = "Please select at least one file";
-        multipleFileUploadError.style.display = "block";
-    }
     uploadMultipleFiles(files);
     event.preventDefault();
-}, true);
+    }, true);

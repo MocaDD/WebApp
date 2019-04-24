@@ -8,11 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -89,25 +85,48 @@ public class FileController {
     @PostMapping("/verifyBin")
     public String   verifyBin() throws Exception{
 
-        Thread.sleep(1000);
-      //  String certName = "cert/bin/signedCertLast";
+        Thread.sleep(200);
+        String certName = "";
         String dataFile = "uploads/bin/" + binName;
         String signFile = "uploads/bin/" + signature;
 
         Path path = Paths.get(signFile);
-        byte[] bytes = Files.readAllBytes(path);
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(path);
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
 
-        byte[] slice = Arrays.copyOfRange(bytes, bytes.length - 5, bytes.length - 1);
+        byte[] slice;
+        try {
+            slice = new byte[1];
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
 
-        final ByteBuffer bb = ByteBuffer.wrap(slice);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
-        int number = bb.getInt();
+        try {
+            System.arraycopy(bytes, bytes.length - 1, slice, 0, 1);
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
 
-        System.out.println(number);
+        int number = (int)slice[0];
 
-        File path2 = new File("cert/bin/");
+        if (number > 9 || number < 1) {
+            deleteBinFiles(dataFile,signFile);
+            return "Not OK";
+        }
+
+        File path2 = new File("cert/");
         File[] files = path2.listFiles();
-        String certName = files[number - 1].getAbsolutePath();
+
+        try {
+            certName = files[number - 1].getPath();
+        } catch (Exception e)   {
+            deleteBinFiles(dataFile,signFile);
+            return "Please submit only one time";
+        }
 
         FileInputStream certfis = new FileInputStream(certName);
         java.security.cert.CertificateFactory cf =
@@ -117,47 +136,107 @@ public class FileController {
         PublicKey pub = cert.getPublicKey();
 
         Signature sign = Signature.getInstance("SHA256withRSA");
+
         sign.initVerify(pub);
 
         InputStream in = null;
 
         try {
-            in = new FileInputStream(dataFile);
+            try {
+                in = new FileInputStream(dataFile);
+            } catch (Exception e)   {
+                return "Please submit only one time";
+            }
             byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) != -1) {
                 sign.update(buf, 0, len);
             }
-        } catch(Exception e)    {
-            return("Not OK");
         } finally {
             if ( in != null ) in.close();
         }
 
 	/* Read the signature bytes */
-        path = Paths.get(signFile);
-        byte[] bytes2 = Files.readAllBytes(path);
+	    Path path3;
+	    try {
+            path3 = Paths.get(signFile);
+        }catch (Exception e)    {
+	        return "Please submit only one time";
+        }
 
-        byte[] bytes3 = Arrays.copyOf(bytes2, bytes.length-4);
+        byte[] bytes2;
 
-        try {
-            boolean response = sign.verify(bytes3);
-            if (response == true)   {
-            }
-
+	    try {
+            bytes2 = Files.readAllBytes(path3);
         } catch (Exception e)   {
+	        return "Please submit only one time";
+        }
+
+        byte[] bytes3;
+        try {
+            bytes3 = new byte[bytes2.length - 1];
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        System.arraycopy(bytes2, 0, bytes3, 0, bytes2.length - 1);
+
+        boolean response = sign.verify(bytes3);
+        if (response == true)   {
+            deleteBinFiles(dataFile,signFile);
+            return "OK";
+        } else {
+            deleteBinFiles(dataFile,signFile);
             return "Not OK";
         }
-        deleteBinFiles(dataFile,signFile);
-        return "OK";
     }
+
 
     @PostMapping("/verifyBin2")
     public String   verifyBin2() throws Exception{
 
-        String certName = "cert/bin/signedCertLast";
+        Thread.sleep(200);
+        String certName = "";
         String dataFile = "uploads/bin/" + signature;
         String signFile = "uploads/bin/" + binName;
+
+        Path path = Paths.get(signFile);
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(path);
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        byte[] slice;
+        try {
+            slice = new byte[1];
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        try {
+            System.arraycopy(bytes, bytes.length - 1, slice, 0, 1);
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        int number = (int)slice[0];
+
+        if (number > 9 || number < 1) {
+            deleteBinFiles(dataFile,signFile);
+            return "Not OK";
+        }
+
+        File path2 = new File("cert/");
+        File[] files = path2.listFiles();
+
+        try {
+            certName = files[number - 1].getPath();
+        } catch (Exception e)   {
+            deleteBinFiles(dataFile,signFile);
+            return "Please submit only one time";
+        }
 
         FileInputStream certfis = new FileInputStream(certName);
         java.security.cert.CertificateFactory cf =
@@ -167,40 +246,59 @@ public class FileController {
         PublicKey pub = cert.getPublicKey();
 
         Signature sign = Signature.getInstance("SHA256withRSA");
+
         sign.initVerify(pub);
 
         InputStream in = null;
 
         try {
-            in = new FileInputStream(dataFile);
+            try {
+                in = new FileInputStream(dataFile);
+            } catch (Exception e)   {
+                return "Please submit only one time";
+            }
             byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) != -1) {
                 sign.update(buf, 0, len);
             }
-        } catch(Exception e)    {
-            deleteBinFiles(dataFile,signFile);
-            return("Not OK");
         } finally {
             if ( in != null ) in.close();
         }
 
 	/* Read the signature bytes */
-        Path path = Paths.get(signFile);
-        byte[] bytes = Files.readAllBytes(path);
+        Path path3;
+        try {
+            path3 = Paths.get(signFile);
+        }catch (Exception e)    {
+            return "Please submit only one time";
+        }
+
+        byte[] bytes2;
 
         try {
-            boolean response = sign.verify(bytes);
-            if (response == true)   {
-                deleteBinFiles(dataFile,signFile);
-            }
-
+            bytes2 = Files.readAllBytes(path3);
         } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        byte[] bytes3;
+        try {
+            bytes3 = new byte[bytes2.length - 1];
+        } catch (Exception e)   {
+            return "Please submit only one time";
+        }
+
+        System.arraycopy(bytes2, 0, bytes3, 0, bytes2.length - 1);
+
+        boolean response = sign.verify(bytes3);
+        if (response == true)   {
+            deleteBinFiles(dataFile,signFile);
+            return "OK";
+        } else {
             deleteBinFiles(dataFile,signFile);
             return "Not OK";
         }
-        deleteBinFiles(dataFile,signFile);
-        return "OK";
     }
 
     private void deleteBinFiles(String dataFile, String signFile) throws InterruptedException {
