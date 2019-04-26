@@ -122,7 +122,7 @@ public class FileController {
         File[] files = path2.listFiles();
 
         try {
-            certName = files[number - 1].getPath();
+            certName = files[number].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
             return "Please submit only one time";
@@ -232,7 +232,7 @@ public class FileController {
         File[] files = path2.listFiles();
 
         try {
-            certName = files[number - 1].getPath();
+            certName = files[number].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
             return "Please submit only one time";
