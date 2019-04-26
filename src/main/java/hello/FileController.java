@@ -95,7 +95,7 @@ public class FileController {
         try {
             bytes = Files.readAllBytes(path);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Poate aici crapa";
         }
 
         byte[] slice;
@@ -125,7 +125,7 @@ public class FileController {
             certName = files[number].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
-            return "Please submit only one time";
+            return "Sau poate aici";
         }
 
         FileInputStream certfis = new FileInputStream(certName);
@@ -205,7 +205,7 @@ public class FileController {
         try {
             bytes = Files.readAllBytes(path);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Poate aici crapa2";
         }
 
         byte[] slice;
@@ -235,7 +235,7 @@ public class FileController {
             certName = files[number].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
-            return "Please submit only one time";
+            return "Sau poate aici 2";
         }
 
         FileInputStream certfis = new FileInputStream(certName);
