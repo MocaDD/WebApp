@@ -122,7 +122,7 @@ public class FileController {
         File[] files = path2.listFiles();
 
         try {
-            certName = files[number].getPath();
+            certName = files[number - 1].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
             return "Sau poate aici";
@@ -232,7 +232,7 @@ public class FileController {
         File[] files = path2.listFiles();
 
         try {
-            certName = files[number].getPath();
+            certName = files[number - 1].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
             return "Sau poate aici 2";
