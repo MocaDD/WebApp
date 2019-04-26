@@ -118,7 +118,7 @@ public class FileController {
             return "Not OK";
         }
 
-        File path2 = new File("cert/");
+        File path2 = new File("Cert/cert/");
         File[] files = path2.listFiles();
 
         try {
@@ -228,7 +228,7 @@ public class FileController {
             return "Not OK";
         }
 
-        File path2 = new File("cert/");
+        File path2 = new File("Cert/cert/");
         File[] files = path2.listFiles();
 
         try {
