@@ -12,7 +12,7 @@ body {
     font-size: 1rem;
     line-height: 1.58;
     color: #333;
-    background-color: #f4f4f4;
+    background-color: #485563;
 }
 
 body:before {
@@ -21,7 +21,7 @@ body:before {
     position: absolute;
     top: 0;
     left: 0;
-    background: #128ff2;
+    background: #2b3e50;
     content: "";
     z-index: 0;
 }
@@ -33,9 +33,20 @@ body:before {
 }
 
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h5, h6 {
     margin-top: 20px;
     margin-bottom: 20px;
+    font-family:inherit;
+    font-weight:300;
+}
+
+h4 {
+    margin-top: 6px;
+    margin-bottom: 4px;
+    font-size: 18px;
+    font-family:inherit;
+    font-weight:300;
+
 }
 
 h1 {
@@ -109,7 +120,8 @@ input[type="file"] {
       max-width: 700px;
       margin-left: auto;
       margin-right: auto;
-      background-color: #fff;
+      color: #ebebeb;
+      background-color: #4e5d6c;
       box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
       margin-top: 60px;
       min-height: 400px;

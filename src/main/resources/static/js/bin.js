@@ -17,7 +17,7 @@ function uploadMultipleFiles(files) {
     xhr.onload = function() {
         console.log(xhr.responseText);
         var response = JSON.parse(xhr.responseText);
-        if(xhr.status == 200 && files.length == 2) {
+        if(xhr.status == 200) {
             multipleFileUploadError.style.display = "none";
             var content = "<p>All Files Uploaded Successfully</p>";
             multipleFileUploadSuccess.innerHTML = content;
@@ -27,9 +27,18 @@ function uploadMultipleFiles(files) {
             multipleFileUploadError.innerHTML = (response && response.message) || "Some Error Occurred";
 
         }
+
         if (files.length > 2)    {
             multipleFileUploadSuccess.style.display = "none";
             multipleFileUploadError.innerHTML = "Please upload only the binary file and the signature";
+            multipleFileUploadError.style.display = "block";
+            verifySignature.style.display = "none";
+            multipleFileUploadSuccess.style.display = "none";
+        }
+
+        if (files.length < 2)    {
+            multipleFileUploadSuccess.style.display = "none";
+            multipleFileUploadError.innerHTML = "Please upload at least two files (bin + signature)";
             multipleFileUploadError.style.display = "block";
             verifySignature.style.display = "none";
             multipleFileUploadSuccess.style.display = "none";
@@ -47,6 +56,7 @@ function uploadMultipleFiles(files) {
                     verifySignature.style.display = "none";
                     verifySignature.innerHTML = "<p> Signature is OK </p>";
                     verifySignature.style.display = "block";
+
                 }   else if (xhr2.responseText == "Not OK")   {
                     var xhr3 = new XMLHttpRequest();
                     xhr3.open ("POST", "/verifyBin2");
@@ -56,10 +66,12 @@ function uploadMultipleFiles(files) {
                              verifySignature.style.display = "none";
                              verifySignature.innerHTML = "<p> Signature is OK </p>";
                              verifySignature.style.display = "block";
+
                         } else if (xhr3.responseText == "Not OK") {
                              verifySignature.style.display = "none";
                              verifySignature.innerHTML = "<p> Signature is not OK  </p>";
                              verifySignature.style.display = "block";
+
                         } else  {
                             verifySignature.style.display = "none";
                             verifySignature.innerHTML = xhr3.responseText;
@@ -80,7 +92,13 @@ function uploadMultipleFiles(files) {
 }
 
   multipleUploadForm.addEventListener('submit', function(event){
-    var files = multipleFileUploadInput.files;
-    uploadMultipleFiles(files);
-    event.preventDefault();
+  if(document.getElementById('CaptchaEnter').value == document.getElementById('randomfield').value ) {
+           var files = multipleFileUploadInput.files;
+           uploadMultipleFiles(files);
+           event.preventDefault();
+           ChangeCaptcha();
+      }
+      else {
+          alert('Please re-check the captcha'); // The alert message that'll be displayed when the user enters a wrong Captcha
+      }
     }, true);

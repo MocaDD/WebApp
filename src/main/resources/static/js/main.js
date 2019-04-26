@@ -32,7 +32,7 @@ function uploadSingleFile(file) {
     xhr2.onload = function()  {
         if (xhr2.responseText == "merge")    {
             verifySignature.style.display = "none";
-            verifySignature.innerHTML = "<p> Si merge </p>";
+            verifySignature.innerHTML = "<p> Signature is OK </p>";
             verifySignature.style.display = "block";
         }   else    {
             verifySignature.style.display = "none";
@@ -44,6 +44,7 @@ function uploadSingleFile(file) {
 }
 
 singleUploadForm.addEventListener('submit', function(event){
+ if(document.getElementById('CaptchaEnterJar').value == document.getElementById('randomfieldJar').value ) {
     var files = singleFileUploadInput.files;
     if(files.length === 0) {
         singleFileUploadError.innerHTML = "Please select a file";
@@ -51,4 +52,9 @@ singleUploadForm.addEventListener('submit', function(event){
     }
     uploadSingleFile(files[0]);
     event.preventDefault();
+    ChangeCaptchaJar();
+    } else {
+                alert('Please re-check the captcha'); // The alert message that'll be displayed when the user enters a wrong Captcha
+            }
+
 }, true);
