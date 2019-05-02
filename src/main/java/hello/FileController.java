@@ -78,7 +78,7 @@ public class FileController {
             file.delete();
             return "Please introduce .jar file";
         }
-
+        deleteJarFiles();
         return(verify(new JarFile("uploads/jars/" + fileName), (X509Certificate)cert));
     }
 
@@ -313,22 +313,21 @@ public class FileController {
         n2.start();
     }
 
+
+
     private static String verify(JarFile jar, X509Certificate targetCert) throws Exception{
 
         if (targetCert == null) {
-            deleteJarFiles();
             return ("Provider certificate is invalid");
         }
 
         try {
             if (jar == null) {
-                deleteJarFiles();
                 return ("Jar file wasn't specified.");
             }
         } catch (Exception ex) {
             SecurityException se = new SecurityException();
             se.initCause(ex);
-            deleteJarFiles();
             return (se.toString());
         }
 
@@ -339,7 +338,6 @@ public class FileController {
         // Ensure the jar file is signed.
         Manifest man = jar.getManifest();
         if (man == null) {
-            deleteJarFiles();
             return "The provider is not signed";
         }
 
@@ -364,7 +362,6 @@ public class FileController {
 
                 is.close();
             } catch (SecurityException se) {
-                deleteJarFiles();
                 return "Something doesn't work properly.";
             }
         }
@@ -380,7 +377,6 @@ public class FileController {
             Certificate[] certs = je.getCertificates();
             if ((certs == null) || (certs.length == 0)) {
                 if (!je.getName().startsWith("META-INF")) {
-                    deleteJarFiles();
                     return ("The provider " +
                             "has unsigned " +
                             "class files.");
@@ -404,14 +400,12 @@ public class FileController {
                 }
 
                 if (!signedAsExpected) {
-                    deleteJarFiles();
                     return("The provider " +
                             "is not signed by a " +
                             "trusted signer");
                 }
             }
         }
-        deleteJarFiles();
         return "merge";
     }
 

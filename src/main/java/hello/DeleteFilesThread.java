@@ -1,6 +1,9 @@
 package hello;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 public class DeleteFilesThread extends Thread {
 
@@ -36,7 +39,12 @@ public class DeleteFilesThread extends Thread {
                 e.printStackTrace();
             }
             File file = new File(a);
-            file.delete();
+
+            try {
+                FileUtils.cleanDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
