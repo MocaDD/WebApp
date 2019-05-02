@@ -303,13 +303,13 @@ public class FileController {
 
     private void deleteBinFiles(String dataFile, String signFile) throws InterruptedException {
 
-        Thread n1 = new DeleteFilesThread(dataFile, signFile, 2);
+        Thread n1 = new DeleteFilesThread(dataFile, signFile);
         n1.start();
     }
 
 
     private static void deleteJarFiles() throws  InterruptedException   {
-        Thread n2 = new DeleteFilesThread("uploads/jars/", "uploads/jars/", 1);
+        Thread n2 = new DeleteFilesThread("uploads/jars/" + fileName, "uploads/jars/" + fileName);
         n2.start();
     }
 
