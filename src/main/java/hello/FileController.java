@@ -309,7 +309,7 @@ public class FileController {
 
 
     private static void deleteJarFiles() throws  InterruptedException   {
-        Thread n2 = new DeleteFilesThread("uploads/bin/" + fileName, "uploads/bin/" + fileName, 1);
+        Thread n2 = new DeleteFilesThread("uploads/jars/" + fileName, "uploads/jars/" + fileName, 1);
         n2.start();
     }
 
