@@ -308,27 +308,27 @@ public class FileController {
     }
 
 
-    private static void deleteJarFiles(String dataFile) throws  InterruptedException   {
-        Thread n2 = new DeleteFilesThread(dataFile, dataFile, 1);
+    private static void deleteJarFiles() throws  InterruptedException   {
+        Thread n2 = new DeleteFilesThread("uploads/bin/" + fileName, "uploads/bin/" + fileName, 1);
         n2.start();
     }
 
     private static String verify(JarFile jar, X509Certificate targetCert) throws Exception{
 
         if (targetCert == null) {
-            deleteJarFiles(jar.toString());
+            deleteJarFiles();
             return ("Provider certificate is invalid");
         }
 
         try {
             if (jar == null) {
-                deleteJarFiles(jar.toString());
+                deleteJarFiles();
                 return ("Jar file wasn't specified.");
             }
         } catch (Exception ex) {
             SecurityException se = new SecurityException();
             se.initCause(ex);
-            deleteJarFiles(jar.toString());
+            deleteJarFiles();
             return (se.toString());
         }
 
@@ -339,7 +339,7 @@ public class FileController {
         // Ensure the jar file is signed.
         Manifest man = jar.getManifest();
         if (man == null) {
-            deleteJarFiles(jar.toString());
+            deleteJarFiles();
             return "The provider is not signed";
         }
 
@@ -364,7 +364,7 @@ public class FileController {
 
                 is.close();
             } catch (SecurityException se) {
-                deleteJarFiles(jar.toString());
+                deleteJarFiles();
                 return "Something doesn't work properly.";
             }
         }
@@ -380,7 +380,7 @@ public class FileController {
             Certificate[] certs = je.getCertificates();
             if ((certs == null) || (certs.length == 0)) {
                 if (!je.getName().startsWith("META-INF")) {
-                    deleteJarFiles(jar.toString());
+                    deleteJarFiles();
                     return ("The provider " +
                             "has unsigned " +
                             "class files.");
@@ -404,14 +404,14 @@ public class FileController {
                 }
 
                 if (!signedAsExpected) {
-                    deleteJarFiles(jar.toString());
+                    deleteJarFiles();
                     return("The provider " +
                             "is not signed by a " +
                             "trusted signer");
                 }
             }
         }
-        deleteJarFiles(jar.toString());
+        deleteJarFiles();
         return "merge";
     }
 

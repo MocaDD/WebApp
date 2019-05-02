@@ -31,7 +31,7 @@ public class DeleteFilesThread extends Thread {
 
         if (n == 1) {
             try {
-                sleep(80000);
+                sleep(20000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
