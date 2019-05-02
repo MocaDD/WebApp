@@ -1,14 +1,15 @@
-package hello;
+package WebApp;
 
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class JarController {
+public class BinController {
 
-    @RequestMapping({"/jar"})
+    @RequestMapping({"/bin"})
     public String jar() {
-        return "jar";
+        return "bin";
     }
 }
+

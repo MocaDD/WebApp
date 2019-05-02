@@ -1,4 +1,4 @@
-package hello;
+package WebApp;
 
 public class UploadFileResponse {
     private String fileName;

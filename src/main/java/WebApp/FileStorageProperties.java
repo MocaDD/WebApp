@@ -1,4 +1,4 @@
-package hello;
+package WebApp;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

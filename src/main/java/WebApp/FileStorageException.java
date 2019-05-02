@@ -1,4 +1,4 @@
-package hello;
+package WebApp;
 
 public class FileStorageException extends RuntimeException {
     public FileStorageException(String message) {

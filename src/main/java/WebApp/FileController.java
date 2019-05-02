@@ -1,4 +1,4 @@
-package hello;
+package WebApp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +25,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
+//a
 @RestController
 public class FileController {
 
@@ -307,13 +308,10 @@ public class FileController {
         n1.start();
     }
 
-
     private static void deleteJarFiles() throws  InterruptedException   {
         Thread n2 = new DeleteFilesThread("uploads/jars/" + fileName, "uploads/jars/" + fileName);
         n2.start();
     }
-
-
 
     private static String verify(JarFile jar, X509Certificate targetCert) throws Exception{
 
