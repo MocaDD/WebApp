@@ -318,16 +318,19 @@ public class FileController {
     private static String verify(JarFile jar, X509Certificate targetCert) throws Exception{
 
         if (targetCert == null) {
+            jar.close();
             return ("Provider certificate is invalid");
         }
 
         try {
             if (jar == null) {
+                jar.close();
                 return ("Jar file wasn't specified.");
             }
         } catch (Exception ex) {
             SecurityException se = new SecurityException();
             se.initCause(ex);
+            jar.close();
             return (se.toString());
         }
 
@@ -338,6 +341,7 @@ public class FileController {
         // Ensure the jar file is signed.
         Manifest man = jar.getManifest();
         if (man == null) {
+            jar.close();
             return "The provider is not signed";
         }
 
@@ -362,6 +366,7 @@ public class FileController {
 
                 is.close();
             } catch (SecurityException se) {
+                jar.close();
                 return "Something doesn't work properly.";
             }
         }
@@ -377,6 +382,7 @@ public class FileController {
             Certificate[] certs = je.getCertificates();
             if ((certs == null) || (certs.length == 0)) {
                 if (!je.getName().startsWith("META-INF")) {
+                    jar.close();
                     return ("The provider " +
                             "has unsigned " +
                             "class files.");
@@ -400,12 +406,14 @@ public class FileController {
                 }
 
                 if (!signedAsExpected) {
+                    jar.close();
                     return("The provider " +
                             "is not signed by a " +
                             "trusted signer");
                 }
             }
         }
+        jar.close();
         return "merge";
     }
 
