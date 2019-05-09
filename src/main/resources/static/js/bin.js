@@ -38,7 +38,7 @@ function uploadMultipleFiles(files) {
 
         if (files.length < 2)    {
             multipleFileUploadSuccess.style.display = "none";
-            multipleFileUploadError.innerHTML = "Please upload at least two files (bin + signature)";
+            multipleFileUploadError.innerHTML = "Please upload two files (binary + signature)";
             multipleFileUploadError.style.display = "block";
             verifySignature.style.display = "none";
             multipleFileUploadSuccess.style.display = "none";

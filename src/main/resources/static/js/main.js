@@ -30,7 +30,7 @@ function uploadSingleFile(file) {
     xhr2.open ("POST", "/verifyJar");
 
     xhr2.onload = function()  {
-        if (xhr2.responseText == "merge")    {
+        if (xhr2.responseText == "Signature is OK")    {
             verifySignature.style.display = "none";
             verifySignature.innerHTML = "<p> Signature is OK </p>";
             verifySignature.style.display = "block";

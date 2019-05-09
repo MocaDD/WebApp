@@ -77,7 +77,7 @@ public class FileController {
         if (!(fileName.endsWith(".jar")))  {
             File file = new File("uploads/bin/" + fileName);
             file.delete();
-            return "Please introduce .jar file";
+            return "Please introduce JAR file";
         }
         deleteJarFiles();
         return(verify(new JarFile("uploads/jars/" + fileName), (X509Certificate)cert));
@@ -96,20 +96,20 @@ public class FileController {
         try {
             bytes = Files.readAllBytes(path);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Signature can not be read. Please contact our support";
         }
 
         byte[] slice;
         try {
             slice = new byte[1];
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Some Error Occurred";
         }
 
         try {
             System.arraycopy(bytes, bytes.length - 1, slice, 0, 1);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Some Error Occurred";
         }
 
         int number = (int)slice[0];
@@ -126,7 +126,7 @@ public class FileController {
             certName = files[number - 1].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
-            return "Please submit only one time";
+            return "Public key can not be read. Please contact our support";
         }
 
         FileInputStream certfis = new FileInputStream(certName);
@@ -146,7 +146,7 @@ public class FileController {
             try {
                 in = new FileInputStream(dataFile);
             } catch (Exception e)   {
-                return "Please submit only one time";
+                return "Binary file can not be read. Please contact our support";
             }
             byte[] buf = new byte[2048];
             int len;
@@ -162,7 +162,7 @@ public class FileController {
 	    try {
             path3 = Paths.get(signFile);
         }catch (Exception e)    {
-	        return "Please submit only one time";
+	        return "Signature can not be read. Please contact our support";
         }
 
         byte[] bytes2;
@@ -170,14 +170,14 @@ public class FileController {
 	    try {
             bytes2 = Files.readAllBytes(path3);
         } catch (Exception e)   {
-	        return "Please submit only one time";
+	        return "Signature can not be read. Please contact our support";
         }
 
         byte[] bytes3;
         try {
             bytes3 = new byte[bytes2.length - 1];
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Some Error Occurred";
         }
 
         System.arraycopy(bytes2, 0, bytes3, 0, bytes2.length - 1);
@@ -206,20 +206,20 @@ public class FileController {
         try {
             bytes = Files.readAllBytes(path);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Signature can not be read. Please contact our support";
         }
 
         byte[] slice;
         try {
             slice = new byte[1];
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Some Error Occurred";
         }
 
         try {
             System.arraycopy(bytes, bytes.length - 1, slice, 0, 1);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Some Error Occurred";
         }
 
         int number = (int)slice[0];
@@ -236,7 +236,7 @@ public class FileController {
             certName = files[number - 1].getPath();
         } catch (Exception e)   {
             deleteBinFiles(dataFile,signFile);
-            return "Please submit only one time";
+            return "Public key can not be read. Please contact our support";
         }
 
         FileInputStream certfis = new FileInputStream(certName);
@@ -256,7 +256,7 @@ public class FileController {
             try {
                 in = new FileInputStream(dataFile);
             } catch (Exception e)   {
-                return "Please submit only one time";
+                return "Binary file can not be read. Please contact our support";
             }
             byte[] buf = new byte[2048];
             int len;
@@ -272,7 +272,7 @@ public class FileController {
         try {
             path3 = Paths.get(signFile);
         }catch (Exception e)    {
-            return "Please submit only one time";
+            return "Signature can not be read. Please contact our support";
         }
 
         byte[] bytes2;
@@ -280,14 +280,14 @@ public class FileController {
         try {
             bytes2 = Files.readAllBytes(path3);
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Signature can not be read. Please contact our support";
         }
 
         byte[] bytes3;
         try {
             bytes3 = new byte[bytes2.length - 1];
         } catch (Exception e)   {
-            return "Please submit only one time";
+            return "Signature can not be read. Please contact our support";
         }
 
         System.arraycopy(bytes2, 0, bytes3, 0, bytes2.length - 1);
@@ -365,7 +365,7 @@ public class FileController {
                 is.close();
             } catch (SecurityException se) {
                 jar.close();
-                return "Something doesn't work properly.";
+                return "Signature is not OK";
             }
         }
 
@@ -376,18 +376,14 @@ public class FileController {
 
             JarEntry je = (JarEntry) e.nextElement();
 
-            // Every file must be signed except files in META-INF.
             Certificate[] certs = je.getCertificates();
             if ((certs == null) || (certs.length == 0)) {
                 if (!je.getName().startsWith("META-INF")) {
                     jar.close();
-                    return ("The provider " +
-                            "has unsigned " +
-                            "class files.");
+                    return ("Signature is not OK");
                 }
             } else {
-                // Check whether the file is signed by the expected
-                // signer. The jar may be signed by multiple signers.
+                // The jar may be signed by multiple signers.
                 // See if one of the signers is 'targetCert'.
                 int startIndex = 0;
                 X509Certificate[] certChain;
@@ -395,24 +391,20 @@ public class FileController {
 
                 while ((certChain = getAChain(certs, startIndex)) != null) {
                     if (certChain[0].equals(targetCert)) {
-                        // Stop since one trusted signer is found.
                         signedAsExpected = true;
                         break;
                     }
-                    // Proceed to the next chain.
                     startIndex += certChain.length;
                 }
 
                 if (!signedAsExpected) {
                     jar.close();
-                    return("The provider " +
-                            "is not signed by a " +
-                            "trusted signer");
+                    return("Signature is not OK");
                 }
             }
         }
         jar.close();
-        return "merge";
+        return "Signature is OK";
     }
 
     private static X509Certificate[] getAChain(Certificate[] certs,
@@ -421,15 +413,12 @@ public class FileController {
             return null;
 
         int i;
-        // Keep going until the next certificate is not the
-        // issuer of this certificate.
         for (i = startIndex; i < certs.length - 1; i++) {
             if (!((X509Certificate)certs[i + 1]).getSubjectDN().
                     equals(((X509Certificate)certs[i]).getIssuerDN())) {
                 break;
             }
         }
-        // Construct and return the found certificate chain.
         int certChainSize = (i-startIndex) + 1;
         X509Certificate[] ret = new X509Certificate[certChainSize];
         for (int j = 0; j < certChainSize; j++ ) {

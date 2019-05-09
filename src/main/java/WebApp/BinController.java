@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BinController {
 
     @RequestMapping({"/bin"})
-    public String jar() {
+    public String bin() {
         return "bin";
     }
 }
