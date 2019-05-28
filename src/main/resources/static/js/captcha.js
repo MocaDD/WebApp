@@ -3,8 +3,6 @@ function ChangeCaptcha() {
     // You can include special characters by adding them to the string above, for eg: chars += "@#?<>";
 
     var string_length = 6; // This is the length of the Captcha
-    // ****** CAUTION ****** This just determines the string that'll be produced by the function. To make the Captcha
-    // field compatible with the updated size, you'll have to change the maxlength attribute in the HTML code
 
     var ChangeCaptcha = '';
     for (var i=0; i<string_length; i++) {
@@ -20,8 +18,6 @@ function ChangeCaptchaJar() {
     // You can include special characters by adding them to the string above, for eg: chars += "@#?<>";
 
     var string_length = 6; // This is the length of the Captcha
-    // ****** CAUTION ****** This just determines the string that'll be produced by the function. To make the Captcha
-    // field compatible with the updated size, you'll have to change the maxlength attribute in the HTML code
 
     var ChangeCaptchaJar = '';
     for (var i=0; i<string_length; i++) {
